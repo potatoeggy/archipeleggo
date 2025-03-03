@@ -5,19 +5,17 @@ from . import islands
 
 ORIGINS = ["*"]
 
-ROUTERS = [
-    islands.music.router
-]
+ROUTERS = [islands.music.router]
+
 
 def create_app() -> FastAPI:
-
     app = FastAPI()
     app.add_middleware(
         CORSMiddleware,
         allow_origins=ORIGINS,
         allow_credentials=True,
         allow_methods=["*"],
-        allow_headers=["*"]
+        allow_headers=["*"],
     )
 
     for router in ROUTERS:

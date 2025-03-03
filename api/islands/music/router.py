@@ -11,9 +11,11 @@ from .cache_player import CACHE_MUSIC_FILES, MusicFile
 
 router = APIRouter(prefix="/music")
 
+
 @router.get("/cache/files", response_model=list[MusicFile])
 def get_music_cache_files() -> list[MusicFile]:
     return CACHE_MUSIC_FILES
+
 
 @router.get("/cache/files/{filename}")
 def get_music_cache_file(filename: str):
