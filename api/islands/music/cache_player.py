@@ -4,11 +4,14 @@ from dataclasses import dataclass
 import os
 from pathlib import Path
 import re
+from typing import cast
 
 
 from ...config import CONFIG_ISLAND_MUSIC_CACHE_PATH
 import eyed3
 import eyed3.id3
+import eyed3.core
+from eyed3.mp3 import Mp3AudioFile
 
 
 @dataclass
@@ -19,9 +22,9 @@ class MusicLyric:
 
 @dataclass
 class MusicFile:
-    title: str
-    artist: str
-    album: str
+    title: str | None
+    artist: str | None
+    album: str | None
     duration: float
     path: str
     art_base64: str | None  # base64 encoded image
@@ -34,7 +37,7 @@ def search_cache_music_mp3s() -> list[MusicFile]:
         with open(os.devnull, "w") as null:
             with contextlib.redirect_stdout(null):
                 with contextlib.redirect_stderr(null):
-                    audiofile = eyed3.load(mp3)
+                    audiofile = cast(Mp3AudioFile | None, eyed3.load(mp3))
 
         if audiofile is None or audiofile.tag is None:
             continue
@@ -67,7 +70,7 @@ def search_cache_music_mp3s() -> list[MusicFile]:
         except IOError:
             lyrics = None
 
-        art_base64: str | None = next(iter(audiofile.tag.images), None)
+        art_base64 = next(iter(audiofile.tag.images), None)
         if art_base64 is not None:
             art_base64 = base64.b64encode(art_base64.image_data).decode("utf-8")
 
